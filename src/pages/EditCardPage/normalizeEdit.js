@@ -3,13 +3,12 @@ const fromServer = (dataFromServer) => {
     title: dataFromServer.title,
     subtitle: dataFromServer.subtitle,
     description: dataFromServer.description,
+    price: dataFromServer.price,
     phone: dataFromServer.phone,
     email: dataFromServer.email,
     web: dataFromServer.web,
-
-    image: dataFromServer.image.url,
+    img: dataFromServer.image.url,
     alt: dataFromServer.image.alt,
-
     state: dataFromServer.address.state,
     country: dataFromServer.address.country,
     city: dataFromServer.address.city,

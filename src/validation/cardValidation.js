@@ -6,11 +6,17 @@ const titleSchema = Joi.object({
 const subTitleSchema = Joi.object({
   subtitle: Joi.string().min(2).max(256).required(),
 });
+const categorySchema = Joi.object({
+  category: Joi.string().required(),
+});
 const descriptionSchema = Joi.object({
   description: Joi.string().min(2).max(1024).required(),
 });
 const phoneSchema = Joi.object({
   phone: Joi.string().min(9).max(11).required(),
+});
+const priceSchema = Joi.object({
+  price: Joi.string().min(1).max(11).required(),
 });
 const emailSchema = Joi.object({
   email: Joi.string().min(5).required(),
@@ -39,8 +45,13 @@ const houseNumberSchema = Joi.object({
 const zipSchema = Joi.object({
   zip: Joi.number().allow(""),
 });
+const categoryIdSchema = Joi.object({
+  categoryId: Joi.string().required().min(1).max(50),
+});
 
 const validateTitleSchema = (title) => titleSchema.validate(title);
+const validateCategorySchema = (category) => categorySchema.validate(category);
+const validatePriceSchema = (price) => priceSchema.validate(price);
 const validateSubTitleSchema = (subtitle) => subTitleSchema.validate(subtitle);
 const validateDescriptionSchema = (description) =>
   descriptionSchema.validate(description);
@@ -56,14 +67,17 @@ const validateStreetSchema = (street) => streetSchema.validate(street);
 const validateHouseNumberSchema = (houseNumber) =>
   houseNumberSchema.validate(houseNumber);
 const validateZipSchema = (zip) => zipSchema.validate(zip);
+const validateCategoryIdSchema = (categoryId) =>
+  categoryIdSchema.validate(categoryId);
 
 const validateSchema = {
   title: validateTitleSchema,
+  category: validateCategorySchema,
+  price: validatePriceSchema,
   subtitle: validateSubTitleSchema,
   description: validateDescriptionSchema,
   phone: validatePhoneSchema,
   email: validateEmailSchema,
-  // image: validateImageSchema,
   web: validateWebSchema,
   image: validateUrlSchema,
   alt: validateAltSchema,
@@ -73,6 +87,7 @@ const validateSchema = {
   street: validateStreetSchema,
   houseNumber: validateHouseNumberSchema,
   zip: validateZipSchema,
+  categoryId: validateCategoryIdSchema,
 };
 
 export default validateSchema;

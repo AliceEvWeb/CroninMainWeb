@@ -11,44 +11,37 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModeIcon from "@mui/icons-material/Mode";
-import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PropTypes from "prop-types";
+import LoginContext from "../store/loginContext";
+import { useContext } from "react";
 
-/**
- * title -> title
- * subtitle -> subheader
- */
 const CardComponent = ({
   title,
   subtitle,
   image,
-  phone,
-  address,
-  cardNumber,
   id,
   liked,
   onDelete,
   onEdit,
-  onCall,
   onLike,
   onMove,
+  price,
+  likeCount,
 }) => {
-  console.log("rerender from CardComponent");
+  const { login } = useContext(LoginContext);
+  const loggedIn = login;
 
   const handleDeleteClick = () => {
-    console.log("Clicked on delete", id);
     onDelete(id);
   };
   const handleEditClick = () => {
     onEdit(id);
   };
-  const handlePhoneClick = () => {
-    onCall(id);
-  };
   const handleLikeClick = () => {
     onLike(id);
   };
+
   const handleMoveClick = () => {
     onMove(id);
   };
@@ -59,7 +52,7 @@ const CardComponent = ({
         <CardMedia
           component="img"
           image={image}
-          alt="american massle car"
+          alt="Card Image"
           height={200}
           onClick={handleMoveClick}
         />
@@ -67,40 +60,49 @@ const CardComponent = ({
       <CardHeader title={title} subheader={subtitle}></CardHeader>
       <Divider></Divider>
       <CardContent>
-        <Typography>
-          <Typography component="span" fontWeight={700}>
-            Phone:
+        <Typography marginBottom={0.5}>
+          By
+          <Typography
+            sx={{
+              display: "inline",
+              paddingLeft: "5px",
+              fontStyle: "italic",
+              fontWeight: "bold",
+              color: "Blue",
+            }}
+          >
+            PetExpress
           </Typography>
-          {phone}
         </Typography>
         <Typography>
           <Typography component="span" fontWeight={700}>
-            Address:
+            Price:
+            <Typography component="span" fontWeight={400}>
+              &nbsp;$
+            </Typography>
           </Typography>
-          {address.city}
-        </Typography>
-        <Typography>
-          <Typography component="span" fontWeight={700}>
-            Card number:
-          </Typography>
-          {cardNumber}
+          {price}
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box>
-            <IconButton onClick={handleDeleteClick}>
-              <DeleteIcon />
-            </IconButton>
-            <IconButton onClick={handleEditClick}>
-              <ModeIcon />
-            </IconButton>
+            {loggedIn && loggedIn.isAdmin && (
+              <IconButton onClick={handleDeleteClick}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+            {loggedIn && loggedIn.isAdmin && (
+              <IconButton onClick={handleEditClick}>
+                <ModeIcon />
+              </IconButton>
+            )}
           </Box>
           <Box>
-            <IconButton onClick={handlePhoneClick}>
-              <LocalPhoneIcon />
-            </IconButton>
-            <IconButton onClick={handleLikeClick}>
-              <FavoriteIcon color={liked ? "error" : "inherit"} />
-            </IconButton>
+            {loggedIn && (
+              <IconButton onClick={handleLikeClick}>
+                {likeCount}
+                <FavoriteIcon color={liked ? "error" : "inherit"} />
+              </IconButton>
+            )}
           </Box>
         </Box>
       </CardContent>
@@ -110,6 +112,7 @@ const CardComponent = ({
 
 CardComponent.propTypes = {
   title: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
   image: PropTypes.shape({
     url: PropTypes.string,
@@ -128,8 +131,8 @@ CardComponent.propTypes = {
 };
 
 CardComponent.defaultProps = {
-  image: "/assets/imgs/car 1.jpg",
-  subtitle: "subtitle default",
+  image: "/assets/images/carouselImage/default.jpg",
+  alt: "Card Image",
 };
 
 export default CardComponent;

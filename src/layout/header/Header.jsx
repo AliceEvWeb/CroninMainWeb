@@ -1,138 +1,105 @@
 import * as React from "react";
-// import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Switch } from "@mui/material";
 import Links from "./ui/Links";
 import LeftDrawerComponent from "./ui/LeftDrawerComponent";
-import { useState } from "react";
 import FilterComponent from "./ui/FilterComponent";
+import useHeader from "../../hooks/useHeader";
+import LoginContext from "../../store/loginContext";
+import { useNavigate } from "react-router-dom";
+import ROUTES from "../../routes/ROUTES";
+import { toast } from "react-toastify";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useEffect, useState, useCallback, useContext } from "react";
+import { Link } from "react-router-dom";
 
 const Header = ({ isDarkTheme, onThemeChange }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const {
+    handleProfileMenuOpen,
+    handleMobileMenuOpen,
+    handleThemeChange,
+    handleOpenDrawerClick,
+    handleCloseDrawerClick,
+    menuId,
+    mobileMenuId,
+    renderMobileMenu,
+    renderMenu,
+    isOpen,
+  } = useHeader({ isDarkTheme, onThemeChange });
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const navigate = useNavigate();
+  const { setLogin } = useContext(LoginContext);
+  const { login } = useContext(LoginContext);
+  const loggedIn = login;
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const [userActivity, setUserActivity] = useState(false);
+  const [logoutTimer, setLogoutTimer] = useState(null);
+  const [logoutToastShown, setLogoutToastShown] = useState(false);
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("token");
+    setLogin(false);
+    toast("You logged out successfully 👌", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    navigate(ROUTES.HOME);
+  }, [navigate, setLogin]);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+  const resetLogoutTimer = useCallback(() => {
+    if (logoutTimer) {
+      clearTimeout(logoutTimer);
+    }
+    const timer = setTimeout(() => {
+      if (!logoutToastShown) {
+        setLogoutToastShown(true);
+        handleLogout();
+        toast("You have been logged out due to inactivity 👋", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    }, 4 * 60 * 60 * 1000);
+    setLogoutTimer(timer);
+  }, [logoutTimer, logoutToastShown, handleLogout]);
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  useEffect(() => {
+    const resetTimer = () => {
+      setUserActivity(true);
+      resetLogoutTimer();
+    };
 
-  const handleThemeChange = (event) => {
-    onThemeChange(event.target.checked);
-  };
+    window.addEventListener("mousemove", resetTimer);
+    window.addEventListener("keypress", resetTimer);
 
-  const handleOpenDrawerClick = () => {
-    setIsOpen(true);
-  };
-  const handleCloseDrawerClick = () => {
-    setIsOpen(false);
-  };
-
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages!!</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
+    return () => {
+      window.removeEventListener("mousemove", resetTimer);
+      window.removeEventListener("keypress", resetTimer);
+    };
+  }, [resetLogoutTimer]);
 
   return (
-    <Box sx={{ flexGrow: 1, mb: 2 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, mb: 20 }}>
+      <AppBar position="fixed" sx={{ backgroundColor: "#c4a5e1" }}>
         <Toolbar>
           <IconButton
             size="large"
@@ -148,55 +115,61 @@ const Header = ({ isDarkTheme, onThemeChange }) => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}
+            sx={{
+              mr: 4,
+              display: { xs: "none", sm: "block" },
+              fontStyle: "italic",
+              fontWeight: "bold",
+              color: "Blue",
+            }}
           >
-            LOGO
+            <Link to={ROUTES.HOME}>PetExpress</Link>
           </Typography>
           <Links />
-          <FilterComponent />
           <Box
             sx={{
               my: 2,
               p: 1,
+              display: { xs: "flex" },
+              marginLeft: "10vw",
             }}
           >
-            <Typography sx={{ display: { xs: "none", md: "inline" } }}>
-              {isDarkTheme ? "Dark" : "Light"} Mode
-            </Typography>
+            <FilterComponent />
             <Switch checked={isDarkTheme} onChange={handleThemeChange} />
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            {loggedIn && (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                {login.profileImage ? (
+                  <Box
+                    component="img"
+                    src={login.profileImage}
+                    alt="User Profile"
+                    sx={{ width: 40, height: 40, borderRadius: "50%" }}
+                  />
+                ) : (
+                  <AccountCircle />
+                )}
+              </IconButton>
+            )}
           </Box>
+          {loggedIn && (
+            <IconButton size="large" color="inherit" onClick={handleLogout}>
+              <LogoutIcon sx={{ mr: 1 }} />
+              <Typography variant="body1" sx={{ mr: 17 }}>
+                LOGOUT
+              </Typography>
+            </IconButton>
+          )}
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"

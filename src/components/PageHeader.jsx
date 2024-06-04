@@ -12,6 +12,8 @@ const PageHeader = ({ title, subtitle }) => {
         flexDirection: "column",
         justifyContent: "center",
         textAlign: "center",
+        pt: 2,
+        mb: 6,
       }}
     >
       <Typography variant="h2" component="h1">
@@ -20,7 +22,7 @@ const PageHeader = ({ title, subtitle }) => {
       <Typography variant="h5" component="h2">
         {subtitle}
       </Typography>
-      <Divider sx={{ my: 4 }} />
+      <Divider sx={{ mt: 2, backgroundColor: "#c0eefd" }} />
     </Grid>
   );
 };

@@ -8,7 +8,6 @@ import ROUTES from "../../../routes/ROUTES";
 
 const FilterComponent = () => {
   const [txt, setTxt] = useState("");
-
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {

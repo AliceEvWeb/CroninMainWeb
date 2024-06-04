@@ -8,8 +8,8 @@ const MainNavLink = ({ to, children }) => {
       {({ isActive }) => (
         <Typography
           color={isActive ? "text.headerActive" : "text.headerColor"}
-          sx={{ p: 2 }}
-          variant="h6"
+          sx={{ p: 1.5, textAlign: "center" }}
+          variant="subtitle1"
         >
           {children}
         </Typography>

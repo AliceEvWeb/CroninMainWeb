@@ -1,25 +1,37 @@
 import { useState } from "react";
-import { Avatar, Box, Grid, Button } from "@mui/material";
-import { Link, useParams } from "react-router-dom";
+import { Box, Grid, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import validateSchema from "../../validation/cardValidation";
 import TextInputComponent from "../../components/TextInputComponent";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import PageHeader from "../../components/PageHeader";
 import ROUTES from "../../routes/ROUTES";
 import { toServerCreate } from "./normalizeCreateCard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+const categories = [
+  "cat-food",
+  "dog-food",
+  "fish-food",
+  "small-pet-food",
+  "bird-food",
+  "cat-toy",
+  "dog-toy",
+  "small-pet-toy",
+];
 
 const CreateCard = () => {
   const [inputsValue, setInputValue] = useState({
     title: "",
     subtitle: "",
-    phone: "",
-    add: "",
-    mail: "",
+    category: "",
+    price: "",
     description: "",
+    phone: "",
+    email: "",
     web: "",
-    url: "",
+    image: "",
     alt: "",
     state: "",
     country: "",
@@ -35,6 +47,8 @@ const CreateCard = () => {
     description: "",
     phone: "",
     email: "",
+    image: "",
+    alt: "",
     country: "",
     city: "",
     street: "",
@@ -42,13 +56,22 @@ const CreateCard = () => {
   });
 
   const navigate = useNavigate();
-  const { id } = useParams();
 
   let keysArray = Object.keys(inputsValue);
+
   const handleInputChange = (e) => {
+    const inputValue = e.target.value.replace(/^\$?/, "$");
+    const isNumber = !isNaN(parseFloat(inputValue)) && isFinite(inputValue);
+    const newValue = isNumber ? inputValue : e.target.value;
     setInputValue((currentState) => ({
       ...currentState,
-      [e.target.id]: e.target.value,
+      [e.target.id]: newValue,
+    }));
+  };
+  const handleCategoryChange = (event) => {
+    setInputValue((prevState) => ({
+      ...prevState,
+      category: event.target.value,
     }));
   };
 
@@ -70,37 +93,33 @@ const CreateCard = () => {
     }
   };
 
-  const handleUpdateChangesClick = (e) => {
+  const handleCreateCard = async (e) => {
     e.preventDefault();
-
-    console.log(toServerCreate(inputsValue));
-    axios
-      .post(
-        "https://monkfish-app-z9uza.ondigitalocean.app/bcard2/cards",
-        toServerCreate(inputsValue)
-      )
-
-      .then(({ data }) => {
-        console.log("Response from server:", data);
-        navigate(ROUTES.MYCARDS);
-      })
-      .catch((err) => {
-        console.log("Error:", err.response);
+    try {
+      await axios.post("/cards", toServerCreate(inputsValue));
+      toast.success("🦄 Your Card Created Successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
+      navigate(ROUTES.MYCARDS);
+    } catch (error) {}
   };
 
   return (
     <Box
       sx={{
-        marginTop: 8,
+        marginTop: 4,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
       }}
     >
-      <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-        <LockOutlinedIcon />
-      </Avatar>
       <PageHeader
         title="Cards"
         subtitle="On this page you can create your cards"
@@ -118,6 +137,26 @@ const CreateCard = () => {
               errors={errors[keyName]}
             />
           ))}
+          <Grid item xs={12}>
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              value={inputsValue.category}
+              onChange={handleCategoryChange}
+              onBlur={handleInputsBlur}
+              className="form-control"
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            {errors.category && (
+              <p className="text-danger">{errors.category}</p>
+            )}
+          </Grid>
         </Grid>
       </Box>
       <Grid container spacing={2}>
@@ -128,7 +167,7 @@ const CreateCard = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={handleUpdateChangesClick}
+              onClick={(e) => handleCreateCard(e)}
               disabled={Object.keys(errors).length > 0}
             >
               Create

@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Box, Avatar, Grid, Button } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Box, Grid, Button } from "@mui/material";
 import axios from "axios";
 import TextInputComponent from "../../components/TextInputComponent";
 import validateSchema from "../../validation/cardValidation";
@@ -18,10 +17,11 @@ const EditCardPage = () => {
     title: "",
     subtitle: "",
     description: "",
+    price: "",
     phone: "",
     email: "",
     web: "",
-    image: "",
+    img: "",
     alt: "",
     state: "",
     country: "",
@@ -36,6 +36,7 @@ const EditCardPage = () => {
     description: "",
     phone: "",
     email: "",
+    img: "",
     country: "",
     city: "",
     street: "",
@@ -43,25 +44,23 @@ const EditCardPage = () => {
   });
 
   const navigate = useNavigate();
-  let { id } = useParams(); //get id from url
+  let { id: _id } = useParams();
   let keysArray = Object.keys(inputsValue);
   const { login } = useContext(LoginContext);
-  /**
-   * useEffect {axios - get data from server} [id]
-   * save btn - axios - update data in server
-   */
+
   useEffect(() => {
-    if (!id || !login) {
+    if (!_id || !login) {
       return;
     }
     axios
-      .get("/cards/" + id)
+      .get("/cards/" + _id)
       .then(({ data }) => {
         if (data.user_id === login._id || login.isAdmin) {
           setInputsValue(fromServer(data));
           setErrors({});
         } else {
-          toast.error("Your card shenged successfully", {
+          navigate(ROUTES.HOME);
+          toast.error("You Dont Have a Permission", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -73,21 +72,8 @@ const EditCardPage = () => {
           });
         }
       })
-      .catch((err) => {
-        console.log(err);
-        toast.error("You Dont Have a Permission", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        navigate(ROUTES.HOME);
-      });
-  }, [id, login]);
+      .catch((err) => {});
+  }, [_id, login]);
 
   const handleInputsChange = (e) => {
     setInputsValue((cInputsValue) => ({
@@ -97,10 +83,13 @@ const EditCardPage = () => {
   };
 
   const handleInputsBlur = (e) => {
-    const { error } = validateSchema[e.target.id]({
+    const validationFunction =
+      validateSchema[e.target.id] || (() => ({ error: null }));
+
+    const { error } = validationFunction({
       [e.target.id]: inputsValue[e.target.id],
     });
-    console.log({ error });
+
     if (error) {
       setErrors((cErrors) => ({
         ...cErrors,
@@ -115,28 +104,31 @@ const EditCardPage = () => {
   };
 
   const handleUpdateChanges = async () => {
-    console.log(inputsValue);
     try {
-      const response = await axios.put("/cards/" + id, toServer(inputsValue));
-      console.log(response.data);
-      navigate(ROUTES.HOME);
-    } catch (error) {
-      console.error("errors updates", error);
-    }
+      await axios.put("/cards/" + _id, toServer(inputsValue));
+      navigate(ROUTES.MYCARDS);
+      toast.success("Your card updated successfully!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {}
   };
 
   return (
     <Box
       sx={{
-        marginTop: 8,
+        marginTop: 4,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
       }}
     >
-      <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-        <LockOutlinedIcon />
-      </Avatar>
       <PageHeader
         title="Edit Your Card"
         subtitle="On this page you can edit all yours cards"

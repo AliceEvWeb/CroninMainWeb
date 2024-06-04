@@ -1,0 +1,25 @@
+.MuiCard-root {
+  backdrop-filter: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.MuiCard-root:hover {
+  box-shadow: none;
+  backdrop-filter: none;
+  background: transparent;
+}
+
+.MuiCard-root:hover,
+.MuiCard-root:focus,
+.MuiCard-root:active {
+  backdrop-filter: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.MuiCard-root.my-class:hover {
+  backdrop-filter: none;
+  box-shadow: none;
+  background: transparent;
+}

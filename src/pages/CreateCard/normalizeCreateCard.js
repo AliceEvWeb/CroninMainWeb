@@ -1,23 +1,24 @@
 const toServerCreate = (datatoServer) => {
   return {
     title: datatoServer.title,
-    subTitle: datatoServer.subtitle,
+    subtitle: datatoServer.subtitle,
+    category: datatoServer.category,
+    price: datatoServer.price,
     description: datatoServer.description,
     phone: datatoServer.phone,
     email: datatoServer.email,
     web: datatoServer.web,
-
     image: {
-      url: datatoServer.image.url,
-      alt: datatoServer.image.alt,
+      url: datatoServer.image,
+      alt: datatoServer.alt,
     },
-    adress: {
-      state: datatoServer.address.state,
-      country: datatoServer.address.country,
-      city: datatoServer.address.city,
-      street: datatoServer.address.street,
-      houseNumber: datatoServer.address.houseNumber,
-      zip: datatoServer.address.zip,
+    address: {
+      state: datatoServer.state,
+      country: datatoServer.country,
+      city: datatoServer.city,
+      street: datatoServer.street,
+      houseNumber: datatoServer.houseNumber,
+      zip: datatoServer.zip,
     },
   };
 };

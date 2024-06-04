@@ -7,7 +7,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useState } from "react";
 import useAutoLogin from "../hooks/useAutoLogin";
 import Typography from "@mui/material/Typography";
-
 import { node } from "prop-types";
 
 const Layout = ({ children }) => {
@@ -15,8 +14,8 @@ const Layout = ({ children }) => {
   const [isDarkTheme, setDarkTheme] = useState(false);
 
   const themes = tmc({
-    "text.headerColor": "!gray",
-    "text.headerActive": "*white",
+    "text.headerColor": "!black",
+    "text.headerActive": "*#010221",
     favActive: "*#FB0000",
   });
 
@@ -27,9 +26,6 @@ const Layout = ({ children }) => {
     setDarkTheme(checked);
   };
 
-  // if (!finishAutoLogin) {
-  //   return <Typography>Loading...</Typography>;
-  // }
   return (
     <ThemeProvider theme={isDarkTheme ? darkMode : lightMode}>
       <CssBaseline />
