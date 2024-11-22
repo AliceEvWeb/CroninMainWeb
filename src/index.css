@@ -1,7 +1,68 @@
 body {
   margin: 0;
+  font-smoothing: antialiased;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f7f7f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+.custom-span {
+  display: inline-block;
+  font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
+  color: #0000fb;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Основной текст - Roboto */
+body,
+p,
+span,
+li {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+}
+
+/* Заголовки и подзаголовки - Montserrat */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.nav-link {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+}
+
+/* Main gradient background for the entire page or a specific section */
+.background-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh; /* Make sure this covers the full background */
+  background-color: #f7f7f7; /* Light background color */
+}
+
+.symbol {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 20%; /* Adjust the position */
+  left: 20%; /* Adjust the position */
+}
+
+.symbol:nth-child(2) {
+  top: 40%;
+  left: 40%;
 }
 
 * {

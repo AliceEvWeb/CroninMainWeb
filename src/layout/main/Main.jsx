@@ -1,8 +1,7 @@
 import { node } from "prop-types";
-import { Container } from "@mui/material";
 
 const Main = ({ children }) => {
-  return <Container>{children}</Container>;
+  return <>{children}</>;
 };
 
 Main.propTypes = {

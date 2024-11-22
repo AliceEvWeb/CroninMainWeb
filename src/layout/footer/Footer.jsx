@@ -1,87 +1,59 @@
-import * as React from "react";
-import BottomNavigation from "@mui/material/BottomNavigation";
-import InfoIcon from "@mui/icons-material/Info";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import MainNavLink from "../header/MainNavLink";
-import { alwaysLinks, loggedInLinks, bizLinks } from "../../layout/myLinks";
-import HomeIcon from "@mui/icons-material/Home";
-import { Box, List, ListItemIcon } from "@mui/material";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import StyleIcon from "@mui/icons-material/Style";
-import LoginContext from "../../store/loginContext";
-import { useContext } from "react";
+import React from "react";
+import { Box, Typography, Link } from "@mui/material";
 
 const Footer = () => {
-  const [value, setValue] = React.useState(0);
-  const { login } = useContext(LoginContext);
-  const loggedIn = login;
-
   return (
-    <Box elevation={4} sx={{ width: "500", position: "sticky", mt: 2 }}>
-      <BottomNavigation
-        value={value}
-        onChange={(event, newValue) => {
-          setValue(newValue);
+    <Box
+      sx={{
+        width: "100%",
+        backgroundColor: "#000",
+        color: "#fff",
+        textAlign: "center",
+        padding: "20px 0",
+        marginTop: "auto",
+      }}
+    >
+      <Typography
+        variant="body2"
+        sx={{
+          fontSize: "14px",
+          mb: 1,
         }}
       >
-        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}></Box>
-        <List
+        <Link
+          href="/privacy-policy"
           sx={{
-            flexGrow: 1,
-            display: { xs: "none", md: "flex" },
+            color: "#fff",
+            textDecoration: "none",
+            "&:hover": {
+              textDecoration: "underline",
+            },
           }}
         >
-          {alwaysLinks.map((myItem, index) => (
-            <MainNavLink to={myItem.to} key={"linksnav" + index}>
-              <ListItemIcon
-                sx={{
-                  height: 30,
-                  display: "flex",
-                  justifyContent: "center",
-                  mt: 1,
-                }}
-              >
-                {index % 2 === 0 ? <HomeIcon sx={{}} /> : <InfoIcon />}
-              </ListItemIcon>
-              {myItem.children}
-            </MainNavLink>
-          ))}
-          {loggedIn &&
-            loggedInLinks.map((myItem, index) => (
-              <MainNavLink to={myItem.to} key={"linksnav2" + index}>
-                <ListItemIcon
-                  sx={{
-                    height: 30,
-                    display: "flex",
-                    justifyContent: "center",
-                    mt: 1,
-                  }}
-                >
-                  {index % 2 === 0 ? <FavoriteIcon /> : <AccountBoxIcon />}
-                </ListItemIcon>
-                {myItem.children}
-              </MainNavLink>
-            ))}
-          {loggedIn &&
-            loggedIn.isBusiness &&
-            bizLinks.map((myItem, index) => (
-              <MainNavLink to={myItem.to} key={"linksnav3" + index}>
-                <ListItemIcon
-                  sx={{
-                    height: 30,
-                    display: "flex",
-                    justifyContent: "center",
-                    mt: 1,
-                  }}
-                >
-                  {index % 2 === 0 ? <AddPhotoAlternateIcon /> : <StyleIcon />}
-                </ListItemIcon>
-                {myItem.children}
-              </MainNavLink>
-            ))}
-        </List>
-      </BottomNavigation>
+          Privacy Policy
+        </Link>{" "}
+        |{" "}
+        <Link
+          href="/terms-of-service"
+          sx={{
+            color: "#fff",
+            textDecoration: "none",
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          }}
+        >
+          Terms of Service
+        </Link>
+      </Typography>
+      <Typography
+        variant="body2"
+        sx={{
+          fontSize: "14px",
+        }}
+      >
+        © 2024. All rights reserved.
+      </Typography>
     </Box>
   );
 };

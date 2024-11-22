@@ -4,7 +4,7 @@ import SearchIconWrapper from "./SearchIconWrapper";
 import StyledInputBase from "./StyledInputBase";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ROUTES from "../../../routes/ROUTES";
+import { ROUTES } from "../../../routes/ROUTES";
 
 const FilterComponent = () => {
   const [txt, setTxt] = useState("");
