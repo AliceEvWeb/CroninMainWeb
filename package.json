@@ -1,7 +1,7 @@
 {
   "name": "cronin-main-website",
   "version": "0.1.0",
-  "homepage": " https://AliceEvWeb/CroninMainWeb",
+  "homepage": "https://croninmainweb.onrender.com",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
