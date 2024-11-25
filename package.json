@@ -1,7 +1,7 @@
 {
-  "name": "biz-app",
+  "name": "cronin-main-website",
   "version": "0.1.0",
-  "homepage": "https://Alice-Ev.github.io/AdamSessionSalesPage",
+  "homepage": " https://AliceEvWeb/CroninMainWeb",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
